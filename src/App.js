@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-function Square({ value, onSquareClick }) {
+const audioStream = new Audio('./celebration.mp3');
+
+function Square({ id, value, onSquareClick, isWinningSquare }) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button id={id} className={`square ${isWinningSquare ? 'winner' : ''}`} onClick={onSquareClick}>
       {value}
     </button>
   );
@@ -25,7 +27,11 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = 'Winner: ' + winner[3];
+    audioStream.play();
+    setInterval(() => {
+      // next up, animate the green background to toggle on and off
+    }, 1000);
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -34,19 +40,19 @@ function Board({ xIsNext, squares, onPlay }) {
     <>
       <div className="status">{status}</div>
       <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+        <Square id={'0'} value={squares[0]} onSquareClick={() => handleClick(0)} isWinningSquare={winner && winner.includes(0)} />
+        <Square id={'1'} value={squares[1]} onSquareClick={() => handleClick(1)} isWinningSquare={winner && winner.includes(1)} />
+        <Square id={'2'} value={squares[2]} onSquareClick={() => handleClick(2)} isWinningSquare={winner && winner.includes(2)} />
       </div>
       <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+        <Square id={'3'} value={squares[3]} onSquareClick={() => handleClick(3)} isWinningSquare={winner && winner.includes(3)} />
+        <Square id={'4'} value={squares[4]} onSquareClick={() => handleClick(4)} isWinningSquare={winner && winner.includes(4)} />
+        <Square id={'5'} value={squares[5]} onSquareClick={() => handleClick(5)} isWinningSquare={winner && winner.includes(5)} />
       </div>
       <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+        <Square id={'6'} value={squares[6]} onSquareClick={() => handleClick(6)} isWinningSquare={winner && winner.includes(6)} />
+        <Square id={'7'} value={squares[7]} onSquareClick={() => handleClick(7)} isWinningSquare={winner && winner.includes(7)} />
+        <Square id={'8'} value={squares[8]} onSquareClick={() => handleClick(8)} isWinningSquare={winner && winner.includes(8)} />
       </div>
     </>
   );
@@ -65,6 +71,10 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
+    if (nextMove === 0) {
+      audioStream.pause();
+      audioStream.currentTime = 0;
+    }
     setCurrentMove(nextMove);
   }
 
@@ -108,7 +118,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [a, b, c, squares[a]];
     }
   }
   return null;
