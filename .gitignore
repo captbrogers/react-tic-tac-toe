@@ -1,0 +1,31 @@
+### Project Specific
+# Files
+*.log
+npm-debug.log
+yarn-error.log
+
+# Directories
+/node_modules
+/public/build
+/public/hot
+/public/storage
+
+### Editor Specific
+# Files
+/*.sublime-project
+/*.sublime-workspace
+
+# Directories
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+
+### System Specific
+# Files
+.DS_Store
+Thumbs.db
+
+# Directories
+__MACOSX
